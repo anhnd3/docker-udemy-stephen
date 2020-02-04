@@ -16,7 +16,7 @@ const pgClient = new Pool({
     host: keys.pgHost,
     database: keys.pgDatabases,
     password: keys.pgPassword,
-    port: keys.pgHost
+    port: keys.pgPort
 });
 pgClient.on("error", () => { console.log("Lost PG connection") });
 
@@ -57,7 +57,7 @@ app.post("/values", async (req, resp) => {
     }
 
     redisClient.hset("values", index, "Nothing yet!");
-    redisPublisher.publist("insert", index);
+    redisPublisher.publish("insert", index);
     pgClient.query("INSERT INTO values(number) VALUES ($1)", [index])
 
     resp.send({ working: true });
